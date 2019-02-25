@@ -26,18 +26,18 @@ eval $(minikube docker-env) # Do this in every terminal window you are using
 `docker build -t nrlabs/newrelic-k8s-guestbook-worker .`
 
 ### Create a Kubernetes secret with your New Relic license key
-kubectl create secret generic guestbook-secret --from-literal=new_relic_license_key='<YOUR KEY HERE>'
+`kubectl create secret generic guestbook-secret --from-literal=new_relic_license_key='<YOUR KEY HERE>'`
 
 ### Create the Kubernetes cluster
-* Navigate to the k8s folder
-`kubectl apply -f .`
+* Navigate to the k8s folder: `kubectl apply -f .`
 
-* Check where our frontend is running
-`kubectl describe service frontend`
+* Check where frontend is running: `kubectl describe service frontend`
+
 **Look for NodePort 31811, we will need this PORT**
 
-`kubectl cluster-info`
+* `kubectl cluster-info`
 **Look for master IP: 192.168.64.3, we will need this IP**
+
 **Open IP:PORT in your browser**
 
 *Wait until RabbitMQ is up and running before trying the app (see kubectl logs)*
