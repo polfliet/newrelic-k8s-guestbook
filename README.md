@@ -9,6 +9,7 @@ This application has the following services:
 * Redis service: For storing the message
 * Queue service: RabbitMQ as message bus
 
+![architecture](https://user-images.githubusercontent.com/45029322/53344050-00f8a300-3912-11e9-9b9f-d4ea0bdbc49e.png)
 
 ### Pre-requisites
 Start minikube and make sure we can connect to Minikube's Docker daemon
@@ -33,10 +34,11 @@ eval $(minikube docker-env) # Do this in every terminal window you are using
 
 * Check where frontend is running: `kubectl describe service frontend`
 
-**Look for NodePort 31811, we will need this PORT**
+** -> Look for NodePort 31811, we will need this PORT**
 
 * `kubectl cluster-info`
-**Look for master IP: 192.168.64.3, we will need this IP**
+
+** -> Look for master IP: 192.168.64.3, we will need this IP**
 
 **Open IP:PORT in your browser**
 
