@@ -15,7 +15,7 @@ app.locals.newrelic = newrelic;
 
 // Do some heavy calculations
 var lookBusy = function() {
-  const end = Date.now() + 100;
+  const end = Date.now() + 500;
   while (Date.now() < end) {
     const doSomethingHeavyInJavaScript = 1 + 2 + 3;
   }
@@ -58,7 +58,8 @@ app.get('/message', function (req, res) {
   client.get('message', function(err, reply) {
     if (err) {
       console.error('error: ', e);
-      return res.status(500).send(e);
+      newrelic.noticeError(e);
+      return e;
     }
     return res.send(reply);
   });
@@ -107,3 +108,8 @@ app.get('/healthz', function (req, res) {
 app.listen(process.env.PORT || 3000, function () {
   console.error('Frontend ' + process.env.K8S_POD_NAME + ' listening on port 3000!');
 });
+
+client.on('error', function(err) {
+  console.error('Frontend: Could not connect to redis host:', err);
+  newrelic.noticeError(err);
+})

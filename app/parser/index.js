@@ -9,7 +9,7 @@ app.locals.newrelic = newrelic;
 
 // Do some heavy calculations
 var lookBusy = function() {
-  const end = Date.now() + 2000;
+  const end = Date.now() + 500;
   while (Date.now() < end) {
     const doSomethingHeavyInJavaScript = 1 + 2 + 3;
   }

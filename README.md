@@ -3,11 +3,11 @@
 This repository contains all information to build a Kubernetes sample application. This work is based on previous work of Drew Decker (https://github.com/wreckedred/) and Clay Smith (https://github.com/smithclay/).
 
 This is still a simple application, but it has some more services:
-* Frontend service: Node.js app serving the UI
-* Parser service: Node.js app responsable for parsing a message and sending it to RabbitMQ
-* Worker service: Node.js app listening to RabbitMQ and pushing the message to Redis
-* Redis service: For storing the message
-* Queue service: RabbitMQ as message bus
+* **Frontend service**: Node.js app serving the UI
+* **Parser service**: Node.js app responsable for parsing a message and sending it to RabbitMQ
+* **Worker service**: Node.js app listening to RabbitMQ and pushing the message to Redis
+* **Redis service**: For storing the message in Redis
+* **Queue service**: RabbitMQ as message bus
 
 ![architecture](https://user-images.githubusercontent.com/45029322/53344050-00f8a300-3912-11e9-9b9f-d4ea0bdbc49e.png)
 
@@ -36,11 +36,11 @@ eval $(minikube docker-env) # Do this in every terminal window you are using
 
 * Check where frontend is running: `kubectl describe service frontend`
 
-**-> Look for NodePort 31811, we will need this PORT**
+**-> Look for 'NodePort 31811', we need this PORT**
 
 * `kubectl cluster-info`
 
-**-> Look for master IP: 192.168.64.3, we will need this IP**
+**-> Look for 'master IP: 192.168.64.3', we need this IP**
 
 **Open IP:PORT in your browser**
 
