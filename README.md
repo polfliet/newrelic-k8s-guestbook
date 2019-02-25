@@ -2,7 +2,7 @@
 ### Kubernetes Guestbook application
 This repository contains all information to build a Kubernetes sample application. This work is based on previous work of Drew Decker (https://github.com/wreckedred/) and Clay Smith (https://github.com/smithclay/).
 
-This application has the following services:
+This is still a simple application, but it has some more services:
 * Frontend service: Node.js app serving the UI
 * Parser service: Node.js app responsable for parsing a message and sending it to RabbitMQ
 * Worker service: Node.js app listening to RabbitMQ and pushing the message to Redis
@@ -12,7 +12,9 @@ This application has the following services:
 ![architecture](https://user-images.githubusercontent.com/45029322/53344050-00f8a300-3912-11e9-9b9f-d4ea0bdbc49e.png)
 
 ### Pre-requisites
-Start minikube and make sure we can connect to Minikube's Docker daemon
+You need a Kubernetes cluster to deploy this applicaton.
+
+For Minikube: start minikube and make sure we can connect to Minikube's Docker daemon
 ```
 minikube start
 eval $(minikube docker-env) # Do this in every terminal window you are using
