@@ -34,11 +34,11 @@ eval $(minikube docker-env) # Do this in every terminal window you are using
 
 * Check where frontend is running: `kubectl describe service frontend`
 
-** -> Look for NodePort 31811, we will need this PORT**
+**-> Look for NodePort 31811, we will need this PORT**
 
 * `kubectl cluster-info`
 
-** -> Look for master IP: 192.168.64.3, we will need this IP**
+**-> Look for master IP: 192.168.64.3, we will need this IP**
 
 **Open IP:PORT in your browser**
 
