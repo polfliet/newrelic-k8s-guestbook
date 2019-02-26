@@ -60,15 +60,6 @@ spec:
           # instead access environment variables to find service host
           # info, comment out the 'value: dns' line above, and uncomment the
           # line below:
-          # value: env
-        #
-        # The following information comes from the Downward API:
-        # Docs: https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/
-        # Tutorial: https://kubernetes.io/docs/tasks/inject-data-application/environment-variable-expose-pod-information/
-        # Listing: https://kubernetes.io/docs/resources-reference/v1.7/#envvarsource-v1-core
-        - name: K8S_POD_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name       
+          # value: env      
         ports:
           - containerPort: 3000

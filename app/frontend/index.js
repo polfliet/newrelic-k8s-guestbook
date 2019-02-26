@@ -25,14 +25,14 @@ var lookBusy = function() {
 var maybeError = function() {
   var throwError = Math.floor(Math.random() * 10) === 1;
   if (throwError) {
-    throw new Error('Error 500--Internal Server Error--' + process.env.K8S_POD_NAME);
+    throw new Error('Error 500--Internal Server Error--' + process.env.NEW_RELIC_METADATA_KUBERNETES_POD_NAME);
   }
 }
 
 // Look busy functionality
 app.use(function(req, res, next) {
   if (process.env.LOOK_BUSY == 't') {
-    console.log('looking busy ' + process.env.K8S_POD_NAME)
+    console.log('looking busy ' + process.env.NEW_RELIC_METADATA_KUBERNETES_POD_NAME)
     lookBusy();
   }
 
@@ -44,7 +44,7 @@ app.get('/', function (req, res) {
     try {
       maybeError();
     } catch (e) {
-      console.error('Frontend ' + process.env.K8S_POD_NAME + ': error: ', e);
+      console.error('Frontend ' + process.env.NEW_RELIC_METADATA_KUBERNETES_POD_NAME + ': error: ', e);
       newrelic.noticeError(e);
       return res.status(500).send(e.toString());
     }
@@ -54,7 +54,7 @@ app.get('/', function (req, res) {
 });
 
 app.get('/message', function (req, res) {
-  console.error('Frontend ' + process.env.K8S_POD_NAME + ': get messages from Redis')
+  console.error('Frontend ' + process.env.NEW_RELIC_METADATA_KUBERNETES_POD_NAME + ': get messages from Redis')
   client.get('message', function(err, reply) {
     if (err) {
       console.error('error: ', e);
@@ -67,7 +67,7 @@ app.get('/message', function (req, res) {
 
 app.post('/message', function(req, res) {
   var message = req.body.message;
-  console.error('Frontend ' + process.env.K8S_POD_NAME + ': Sending message to parser: ' + message)
+  console.error('Frontend ' + process.env.NEW_RELIC_METADATA_KUBERNETES_POD_NAME + ': Sending message to parser: ' + message)
 
   var post_data = querystring.stringify({
       'message' : message
@@ -89,7 +89,7 @@ app.post('/message', function(req, res) {
   var post_req = http.request(post_options, function(result) {
       result.setEncoding('utf8');
       result.on('data', function (chunk) {
-          console.error('Frontend ' + process.env.K8S_POD_NAME + ': Response: ' + chunk);
+          console.error('Frontend ' + process.env.NEW_RELIC_METADATA_KUBERNETES_POD_NAME + ': Response: ' + chunk);
       });
       res.render('index', { title: 'New Relic K8s Guestbook', message: 'Message was sent'})
   });
@@ -106,7 +106,7 @@ app.get('/healthz', function (req, res) {
 });
 
 app.listen(process.env.PORT || 3000, function () {
-  console.error('Frontend ' + process.env.K8S_POD_NAME + ' listening on port 3000!');
+  console.error('Frontend ' + process.env.NEW_RELIC_METADATA_KUBERNETES_POD_NAME + ' listening on port 3000!');
 });
 
 client.on('error', function(err) {
