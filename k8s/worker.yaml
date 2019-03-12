@@ -28,8 +28,7 @@ spec:
     spec:
       containers:
       - name: worker
-        image: nrlabs/newrelic-k8s-guestbook-worker:latest
-        imagePullPolicy: Never
+        image: docker.io/spolfliet/newrelic-k8s-guestbook-worker:latest
         resources:
           requests:
             cpu: 50m

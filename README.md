@@ -33,7 +33,7 @@ eval $(minikube docker-env) # Do this in every terminal window you are using
 
 ## Install the APM metadata injection
 * Navigate to the k8s/metadata folder: `kubectl apply -f .`
-* Wait until the metadata-setup job is completed: `kubectl get pods`:
+* Wait until the metadata-setup job is completed: `kubectl get pods`
 ```
 newrelic-metadata-injection-deployment-56dbf48c6-wkbnc   1/1     Running     0          17s
 newrelic-metadata-setup-zw8sl                            0/1     Completed   0          18s

@@ -28,8 +28,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: nrlabs/newrelic-k8s-guestbook-frontend:latest
-        imagePullPolicy: Never
+        image: docker.io/spolfliet/newrelic-k8s-guestbook-frontend:latest
         livenessProbe:
           httpGet:
             path: /healthz
