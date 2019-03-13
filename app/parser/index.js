@@ -23,8 +23,10 @@ var pushToQueue = function(message) {
     if (conn != undefined) {
       conn.createChannel(function(err, ch) {
         var q = 'message';
+	var transactionHandle = newrelic.getTransaction();
+        var payload = transactionHandle.createDistributedTracePayload();
         ch.assertQueue(q, {durable: false});
-        ch.sendToQueue(q, new Buffer(message));
+        ch.sendToQueue(q, new Buffer(message), {headers: {'x-newrelic-payload': payload}});
         console.error('Parser ' + process.env.NEW_RELIC_METADATA_KUBERNETES_POD_NAME + ': message sent to queue ' + message);
       });
       setTimeout(function() { conn.close() }, 500);

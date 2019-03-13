@@ -21,6 +21,9 @@ var listenToQueue = function() {
         console.error(' [*] ' + process.env.NEW_RELIC_METADATA_KUBERNETES_POD_NAME + ' Waiting for messages in %s', q);
         ch.consume(q, function(msg) {
           var message = msg.content.toString();
+	  var payload = msg.properties.headers['x-newrelic-payload'];
+	  var transaction = newrelic.getTransaction();
+	  transaction.acceptDistributedTracePayload(payload);
           console.error(' [x] ' + process.env.NEW_RELIC_METADATA_KUBERNETES_POD_NAME + ' Received %s', message);
           // Push to Redis
           client.set('message', message, function(err) {
