@@ -1,6 +1,6 @@
 const newrelic = require('newrelic');
 const redis = require('redis');
-const amqp = require('amqplib/callback_api');
+const amqp = require('amqplib');
 const express = require('express');
 const bodyParser = require('body-parser');
 
@@ -11,39 +11,48 @@ const redisHost = process.env.GET_HOSTS_ENV !== 'env' ? 'redis-master' : process
 const client = redis.createClient({ host: redisHost, port: 6379 });
 app.locals.newrelic = newrelic;
 
+// Do some heavy calculations
+var lookBusy = function() {
+  const end = Date.now() + 50;
+  while (Date.now() < end) {
+    const doSomethingHeavyInJavaScript = 1 + 2 + 3;
+  }
+};
+
 var listenToQueue = function() {
   console.error('Worker ' + process.env.NEW_RELIC_METADATA_KUBERNETES_POD_NAME + ': start listening to queue');
-  amqp.connect('amqp://user:bitnami@queue:5672', function(err, conn) {
-    if (conn != undefined) {
-      conn.createChannel(function(err, ch) {
-        var q = 'message';
-        ch.assertQueue(q, {durable: false});
-        console.error(' [*] ' + process.env.NEW_RELIC_METADATA_KUBERNETES_POD_NAME + ' Waiting for messages in %s', q);
-        ch.consume(q, function(msg) {
+
+  amqp.connect('amqp://user:bitnami@queue:5672').then(function(conn) {
+    process.once('SIGINT', function() { conn.close(); });
+    return conn.createChannel().then(function(ch) {
+      var q = 'message';
+      var ok = ch.assertQueue(q, {durable: false});
+
+      ok = ok.then(function(_qok) {
+        return ch.consume(q, function(msg) {
           var message = msg.content.toString();
-	  var payload = msg.properties.headers['x-newrelic-payload'];
-	  var transaction = newrelic.getTransaction();
-	  transaction.acceptDistributedTracePayload(payload);
-          console.error(' [x] ' + process.env.NEW_RELIC_METADATA_KUBERNETES_POD_NAME + ' Received %s', message);
+          console.error(" [x] Received '%s'", message);
+
+          // New Relic DT instrumentation
+          // var payload = msg.properties.headers['x-newrelic-payload'];
+          // var transaction = newrelic.getTransaction();
+          // transaction.acceptDistributedTracePayload(payload);
+          // console.error(' [x] New Relic payload: ', payload)
+
           // Push to Redis
           client.set('message', message, function(err) {
             if (err) {
-                console.error('Worker ' + process.env.NEW_RELIC_METADATA_KUBERNETES_POD_NAME + ': Error pushing to Redis')
+              console.error('Worker ' + process.env.NEW_RELIC_METADATA_KUBERNETES_POD_NAME + ': Error pushing to Redis');
             }
           });
-        }, {noAck: true}, function(err, ok) {
-          console.error(' [!] ' + process.env.NEW_RELIC_METADATA_KUBERNETES_POD_NAME + ' Error receiving from queue');
-          console.error(' [!] ' + process.env.NEW_RELIC_METADATA_KUBERNETES_POD_NAME + ' ', err);
-          console.error(' [!] ' + process.env.NEW_RELIC_METADATA_KUBERNETES_POD_NAME + ' ', ok);
-        });
+        }, {noAck: true});
       });
-    } else {
-      console.error('Worker ' + process.env.NEW_RELIC_METADATA_KUBERNETES_POD_NAME + ': failed connecting with queue')
-      newrelic.noticeError(err);
-      // Try again
-      listenToQueue();
-    }
-  });
+
+      return ok.then(function(_consumeOk) {
+        console.error(' [*] Waiting for messages');
+      });
+    });
+  }).catch(console.error);
 }
 
 client.on('error', function(err) {

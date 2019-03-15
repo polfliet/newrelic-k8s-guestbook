@@ -54,7 +54,7 @@ app.get('/', function (req, res) {
 });
 
 app.get('/message', function (req, res) {
-  console.error('Frontend ' + process.env.NEW_RELIC_METADATA_KUBERNETES_POD_NAME + ': get messages from Redis')
+  console.error(' [x] Get messages from Redis')
   client.get('message', function(err, reply) {
     if (err) {
       console.error('error: ', e);
@@ -67,36 +67,25 @@ app.get('/message', function (req, res) {
 
 app.post('/message', function(req, res) {
   var message = req.body.message;
-  console.error('Frontend ' + process.env.NEW_RELIC_METADATA_KUBERNETES_POD_NAME + ': Sending message to parser: ' + message)
 
-  var post_data = querystring.stringify({
-      'message' : message
+  const options = {
+    hostname: 'parser',
+    port: 80,
+    path: '/?message=' + querystring.escape(message),
+    method: 'GET'
+  }
+
+  const request = http.request(options, (res) => {
+    res.on('data', (d) => {
+      console.error(' [x] GET Data: ', d);
+    })
   });
 
-  // An object of options to indicate where to post to
-  var post_options = {
-      host: 'parser',
-      port: '80',
-      path: '/',
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Content-Length': Buffer.byteLength(post_data)
-      }
-  };
+  request.on('error', (error) => {
+    console.error(' [x] GET Error: ', error);
+  })
 
-  // Set up the request
-  var post_req = http.request(post_options, function(result) {
-      result.setEncoding('utf8');
-      result.on('data', function (chunk) {
-          console.error('Frontend ' + process.env.NEW_RELIC_METADATA_KUBERNETES_POD_NAME + ': Response: ' + chunk);
-      });
-      res.render('index', { title: 'New Relic K8s Guestbook', message: 'Message was sent'})
-  });
-
-  // post the data
-  post_req.write(post_data);
-  post_req.end();
+  request.end()
 
   res.redirect('/');
 });

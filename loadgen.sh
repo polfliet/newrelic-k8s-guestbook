@@ -4,7 +4,7 @@ if [ "$#" -ne 1 ]; then
     exit
 fi
 
-HOST="192.168.64.3"
+HOST="192.168.99.100"
 PORT=$1
   
 for i in {1..1000}
