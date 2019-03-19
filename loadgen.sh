@@ -4,11 +4,11 @@ if [ "$#" -ne 1 ]; then
     exit
 fi
 
-HOST="192.168.99.100"
+HOST="localhost"
 PORT=$1
   
 for i in {1..1000}
 do
         curl -d "message=automated_message_$i" -X POST http://$HOST:$PORT/message 
-        sleep 0.5
+        sleep 1
 done
