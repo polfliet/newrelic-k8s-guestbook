@@ -24,7 +24,7 @@ var pushToQueue = function(message, res) {
       var ok = ch.assertQueue(q, {durable: false});
 
       return ok.then(function(_qok) {
-        newrelic.addCustomAttribute('msgData', message);
+        //newrelic.addCustomAttribute('msgData', message);
         console.error(' [x] Sending to queue: ' + message);
         ch.sendToQueue(q, Buffer.from(message));
         return ch.close();
