@@ -34,12 +34,6 @@ var listenToQueue = function() {
           var message = msg.content.toString();
           console.error(" [x] Received '%s'", message);
 
-          // New Relic DT instrumentation
-          // var payload = msg.properties.headers['x-newrelic-payload'];
-          // var transaction = newrelic.getTransaction();
-          // transaction.acceptDistributedTracePayload(payload);
-          // console.error(' [x] New Relic payload: ', payload)
-
           // Push to Redis
           client.set('message', message, function(err) {
             if (err) {

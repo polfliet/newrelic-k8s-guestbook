@@ -23,19 +23,10 @@ var pushToQueue = function(message, res) {
       var q = 'message';
       var ok = ch.assertQueue(q, {durable: false});
 
-      // New Relic DT instrumentation
-      // var transactionHandle = newrelic.getTransaction();
-      // var payload = transactionHandle.createDistributedTracePayload().httpSafe();
-      // var headers = {headers: {'x-newrelic-payload': payload};
-
       return ok.then(function(_qok) {
         newrelic.addCustomAttribute('msgData', message);
         console.error(' [x] Sending to queue: ' + message);
         ch.sendToQueue(q, Buffer.from(message));
-        
-        // New Relic DT instrumentation
-        // ch.sendToQueue(q, Buffer.from(message), {headers: {'x-newrelic-payload': payload}});
-        // console.error(' [x] New Relic payload: ', payload);
         return ch.close();
       });
     }).finally(function() { 
