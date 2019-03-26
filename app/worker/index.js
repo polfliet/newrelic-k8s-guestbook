@@ -30,6 +30,7 @@ var listenToQueue = function() {
 
       ok = ok.then(function(_qok) {
         return ch.consume(q, function(msg) {
+          lookBusy();
           var message = msg.content.toString();
           console.error(" [x] Received '%s'", message);
 

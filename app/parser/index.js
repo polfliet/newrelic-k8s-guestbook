@@ -15,7 +15,7 @@ var lookBusy = function() {
   }
 };
 
-var pushToQueue = function(message) {
+var pushToQueue = function(message, res) {
   lookBusy();
 
   amqp.connect('amqp://user:bitnami@queue:5672').then(function(conn) {
@@ -38,7 +38,10 @@ var pushToQueue = function(message) {
         // console.error(' [x] New Relic payload: ', payload);
         return ch.close();
       });
-    }).finally(function() { conn.close(); });
+    }).finally(function() { 
+      conn.close();
+      res.status(200).send('OK');
+    });
   }).catch(console.error);
 }
 
@@ -53,12 +56,13 @@ app.use(function(req, res, next) {
 });
 
 app.get('/healthz', function (req, res) {
+  newrelic.setIgnoreTransaction(true);
   res.status(200).send('OK');    
 });
 
 app.get('/', function(req, res) {
   var message = req.query.message.toUpperCase();
-  pushToQueue(message)
+  pushToQueue(message, res)
 });
 
 app.listen(process.env.PORT || 3000, function () {
