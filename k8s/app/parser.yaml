@@ -29,6 +29,8 @@ spec:
       containers:
       - name: parser
         image: docker.io/spolfliet/newrelic-k8s-guestbook-parser:latest
+        #image: nrlabs/newrelic-k8s-guestbook-parser
+        #imagePullPolicy: Never
         livenessProbe:
           httpGet:
             path: /healthz
