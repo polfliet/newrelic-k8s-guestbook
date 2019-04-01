@@ -22,7 +22,7 @@ var lookBusy = function() {
 var listenToQueue = function() {
   console.error('Worker ' + process.env.NEW_RELIC_METADATA_KUBERNETES_POD_NAME + ': start listening to queue');
 
-  amqp.connect('amqp://user:bitnami@queue:5672').then(function(conn) {
+  amqp.connect('amqp://user:bitnami@rabbitmq:5672').then(function(conn) {
     process.once('SIGINT', function() { conn.close(); });
     return conn.createChannel().then(function(ch) {
       var q = 'message';
