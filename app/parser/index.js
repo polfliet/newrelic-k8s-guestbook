@@ -18,7 +18,7 @@ var lookBusy = function() {
 var pushToQueue = function(message, res) {
   lookBusy();
 
-  amqp.connect('amqp://user:bitnami@queue:5672').then(function(conn) {
+  amqp.connect('amqp://user:bitnami@rabbitmq:5672').then(function(conn) {
     return conn.createChannel().then(function(ch) {
       var q = 'message';
       var ok = ch.assertQueue(q, {durable: false});
