@@ -57,7 +57,7 @@ exports.config = {
       'response.headers.authorization',
       'response.headers.proxyAuthorization',
       'response.headers.setCookie*',
-      'response.headers.x*'
+      'response.headers.x*',
       //exclude request.params.message for workshop
       'request.parameters.message'
     ]
